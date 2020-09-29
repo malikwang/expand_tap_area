@@ -1,0 +1,17 @@
+name: expand_tap_area
+description: Manually expand the tap area of a widget without changing its size or layout. Similar with the hitTest in iOS development.
+repository: https://github.com/malikwang/expand_tap_area
+homepage: https://github.com/malikwang/expand_tap_area
+
+version: 1.0.0
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
