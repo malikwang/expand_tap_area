@@ -5,8 +5,10 @@ Manually expand the tap area of a widget without changing its size or layout. Si
 # Context
 
 ```
-In the Human Interface Guidelines, Apple recommends a minimum target size of 44 x 44 px. In the Android Material Design Guidelines, it’s suggested that touch targets should be at least 48 x 48 dp.
+In the Human Interface Guidelines, Apple recommends a minimum target size of 44 x 44 px. 
+In the Android Material Design Guidelines, it’s suggested that touch targets should be at least 48 x 48 dp.
 ```
+Inspired by [issue](https://github.com/flutter/flutter/issues/31728)
 
 # Usage
 
