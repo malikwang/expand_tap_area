@@ -95,11 +95,13 @@ class _ExpandTapRenderBox extends RenderBox
       size.width + tapPadding.horizontal,
       size.height + tapPadding.vertical,
     );
-    final Paint paint = Paint()
-      ..style = PaintingStyle.fill
-      ..strokeWidth = 1.0
-      ..color = debugPaintExpandAreaColor;
-    context.canvas.drawRect(paintRect.intersect(parentRect), paint);
+    if (paintRect.overlaps(parentRect)) {
+      final Paint paint = Paint()
+        ..style = PaintingStyle.fill
+        ..strokeWidth = 1.0
+        ..color = debugPaintExpandAreaColor;
+      context.canvas.drawRect(paintRect.intersect(parentRect), paint);
+    }
   }
 
   @override

@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 void main() {
   debugPaintExpandAreaEnabled = true;
+  debugPaintExpandAreaColor = Color(0xFF00FFFF).withOpacity(0.2);
   runApp(MyApp());
 }
 
