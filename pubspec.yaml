@@ -3,7 +3,7 @@ description: Manually expand the tap area of a widget without changing its size 
 repository: https://github.com/malikwang/expand_tap_area
 homepage: https://github.com/malikwang/expand_tap_area
 
-version: 1.0.0
+version: 1.0.1
 
 environment:
   sdk: ">=2.7.0 <3.0.0"

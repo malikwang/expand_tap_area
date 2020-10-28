@@ -1,6 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'dart:ui';
+import 'package:flutter/foundation.dart';
+
+bool debugPaintExpandAreaEnabled = false;
+Color debugPaintExpandAreaColor = const Color(0xFF00FFFF).withOpacity(0.2);
 
 class ExpandTapWidget extends SingleChildRenderObjectWidget {
   ExpandTapWidget({
@@ -60,6 +65,41 @@ class _ExpandTapRenderBox extends RenderBox
       final BoxParentData childParentData = child.parentData;
       context.paintChild(child, childParentData.offset + offset);
     }
+    if (debugPaintExpandAreaEnabled && kDebugMode)
+      debugPaintExpandArea(context, offset);
+  }
+
+  void debugPaintExpandArea(PaintingContext context, Offset offset) {
+    RenderBox parentBox = parent as RenderBox;
+
+    /// [parentPosition]: the offset of current renderbox's parent
+    Offset parentPosition = Offset.zero;
+    parentPosition = offset - localToGlobal(Offset.zero, ancestor: parentBox);
+
+    /// we directly get this offset using the method [localToGlobal] of parentBox, like the following annotated code
+    /// However, this result is inaccurate, you can uncomment to try out.
+    // parentPosition = parentBox.localToGlobal(Offset.zero);
+
+    Size parentSize = parentBox.size;
+    Rect parentRect = Rect.fromLTWH(
+      parentPosition.dx,
+      parentPosition.dy,
+      parentSize.width,
+      parentSize.height,
+    );
+    final BoxParentData childParentData = child.parentData;
+    Offset paintOffset = childParentData.offset + offset - tapPadding.topLeft;
+    Rect paintRect = Rect.fromLTWH(
+      paintOffset.dx,
+      paintOffset.dy,
+      size.width + tapPadding.horizontal,
+      size.height + tapPadding.vertical,
+    );
+    final Paint paint = Paint()
+      ..style = PaintingStyle.fill
+      ..strokeWidth = 1.0
+      ..color = debugPaintExpandAreaColor;
+    context.canvas.drawRect(paintRect.intersect(parentRect), paint);
   }
 
   @override

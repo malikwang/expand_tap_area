@@ -1,8 +1,10 @@
 import 'package:expand_tap_area/expand_tap_area.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 void main() {
+  debugPaintExpandAreaEnabled = true;
   runApp(MyApp());
 }
 
@@ -271,26 +273,10 @@ class _MyHomePageState extends State<MyHomePage> {
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: Text(
-                'The tap area of above small red widget is illustrated as the grey area in the following'),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(5),
-                ),
-                border: Border.all(
-                  color: Colors.black,
-                  width: 1,
-                ),
-              ),
-              alignment: Alignment.centerRight,
-              child: Container(
-                width: 100,
-                height: 44,
-                color: Colors.grey.withOpacity(0.5),
+              'The tap area of above small red widget is illustrated as Cyan colored area.',
+              style: TextStyle(
+                fontStyle: FontStyle.italic,
+                color: Colors.cyan,
               ),
             ),
           ),
@@ -376,7 +362,7 @@ class DemoPage extends StatelessWidget {
                       width: double.infinity,
                       margin: EdgeInsets.symmetric(vertical: 10),
                       child: Text(
-                        "The grey area in the following examples is only used to illustrate the expand area.",
+                        "The Cyan colored area is used to illustrate the expand area. The size of all the following bigger Container is 100 * 100.",
                         style: TextStyle(fontStyle: FontStyle.italic),
                       ),
                     ),
@@ -388,7 +374,6 @@ class DemoPage extends StatelessWidget {
                     ),
                     Container(
                       alignment: Alignment.center,
-                      color: Colors.grey.withOpacity(0.2),
                       width: 100,
                       height: 100,
                       child: ExpandTapWidget(
@@ -405,13 +390,12 @@ class DemoPage extends StatelessWidget {
                       width: double.infinity,
                       margin: EdgeInsets.symmetric(vertical: 10),
                       child: Text(
-                        "Notice: \nThe expand tap area won't exceed the size of parent box.In this case, tapPadding is EdgeInsets.all(100).",
+                        "Notice: \nThe expand tap area won't exceed the size of parent box. In this case, tapPadding is EdgeInsets.all(100).",
                         style: TextStyle(fontWeight: FontWeight.w600),
                       ),
                     ),
                     Container(
                       alignment: Alignment.center,
-                      color: Colors.grey.withOpacity(0.2),
                       width: 100,
                       height: 100,
                       child: ExpandTapWidget(
@@ -439,7 +423,6 @@ class DemoPage extends StatelessWidget {
                         color: Colors.yellow,
                         child: Container(
                           alignment: Alignment.center,
-                          color: Colors.grey.withOpacity(0.5),
                           width: 70,
                           height: 70,
                           child: ExpandTapWidget(
@@ -462,7 +445,6 @@ class DemoPage extends StatelessWidget {
                     ),
                     Container(
                       alignment: Alignment.center,
-                      color: Colors.grey.withOpacity(0.2),
                       width: 100,
                       height: 100,
                       child: ExpandTapWidget(
