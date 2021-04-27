@@ -5,7 +5,11 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 
 bool debugPaintExpandAreaEnabled = false;
-Color debugPaintExpandAreaColor = const Color(0xFF00FFFF).withOpacity(0.2);
+Color debugPaintExpandAreaColor = const Color(0xFFFF0000).withOpacity(0.4);
+
+// If there is someone who knows how to extend the hitarea above the parent rect, so it is not
+// Clipped, please add that here. This would be really helpful.
+Color debugPaintClipAreaColor = const Color(0xFF0000FF).withOpacity(0.4);
 
 class ExpandTapWidget extends SingleChildRenderObjectWidget {
   ExpandTapWidget({
@@ -34,9 +38,7 @@ class _TmpGestureArenaMember extends GestureArenaMember {
 
   @override
   void acceptGesture(int key) {
-    if (this.onTap != null) {
-      this.onTap();
-    }
+    this.onTap();
   }
 
   @override
@@ -65,8 +67,9 @@ class _ExpandTapRenderBox extends RenderBox
       final BoxParentData childParentData = child!.parentData! as BoxParentData;
       context.paintChild(child!, childParentData.offset + offset);
     }
-    if (debugPaintExpandAreaEnabled && kDebugMode)
+    if (debugPaintExpandAreaEnabled) {
       debugPaintExpandArea(context, offset);
+    }
   }
 
   void debugPaintExpandArea(PaintingContext context, Offset offset) {
@@ -95,13 +98,17 @@ class _ExpandTapRenderBox extends RenderBox
       size.width + tapPadding.horizontal,
       size.height + tapPadding.vertical,
     );
-    if (paintRect.overlaps(parentRect)) {
       final Paint paint = Paint()
         ..style = PaintingStyle.fill
         ..strokeWidth = 1.0
         ..color = debugPaintExpandAreaColor;
-      context.canvas.drawRect(paintRect.intersect(parentRect), paint);
-    }
+
+      final Paint paint2 = Paint()
+        ..style = PaintingStyle.fill
+        ..strokeWidth = 1.0
+        ..color = debugPaintClipAreaColor;
+      context.canvas.drawRect(paintRect, paint);
+      context.canvas.drawRect(paintRect.intersect(parentRect), paint2);
   }
 
 
