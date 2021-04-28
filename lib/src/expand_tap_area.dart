@@ -5,14 +5,18 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 
 bool debugPaintExpandAreaEnabled = false;
-Color debugPaintExpandAreaColor = const Color(0xFF00FFFF).withOpacity(0.2);
+Color debugPaintExpandAreaColor = const Color(0xFFFF0000).withOpacity(0.4);
+
+// If there is someone who knows how to extend the hitarea above the parent rect, so it is not
+// Clipped, please add that here. This would be really helpful.
+Color debugPaintClipAreaColor = const Color(0xFF0000FF).withOpacity(0.4);
 
 class ExpandTapWidget extends SingleChildRenderObjectWidget {
   ExpandTapWidget({
-    Key key,
-    Widget child,
-    this.onTap,
-    this.tapPadding,
+    Key? key,
+    Widget? child,
+    required this.onTap,
+    required this.tapPadding,
   }) : super(key: key, child: child);
 
   final VoidCallback onTap;
@@ -20,23 +24,21 @@ class ExpandTapWidget extends SingleChildRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) => _ExpandTapRenderBox(
-        onTap: onTap,
-        tapPadding: tapPadding,
-      );
+    onTap: onTap,
+    tapPadding: tapPadding,
+  );
 }
 
 class _TmpGestureArenaMember extends GestureArenaMember {
   _TmpGestureArenaMember({
-    this.onTap,
+    required this.onTap,
   });
 
   final VoidCallback onTap;
 
   @override
   void acceptGesture(int key) {
-    if (this.onTap != null) {
-      this.onTap();
-    }
+    this.onTap();
   }
 
   @override
@@ -46,7 +48,7 @@ class _TmpGestureArenaMember extends GestureArenaMember {
 class _ExpandTapRenderBox extends RenderBox
     with RenderObjectWithChildMixin<RenderBox> {
   _ExpandTapRenderBox({
-    this.onTap,
+    required this.onTap,
     this.tapPadding = EdgeInsets.zero,
   });
 
@@ -55,18 +57,19 @@ class _ExpandTapRenderBox extends RenderBox
 
   @override
   void performLayout() {
-    child.layout(constraints, parentUsesSize: true);
-    size = child.size;
+    child!.layout(constraints, parentUsesSize: true);
+    size = child!.size;
   }
 
   @override
   void paint(PaintingContext context, Offset offset) {
     if (child != null) {
-      final BoxParentData childParentData = child.parentData;
-      context.paintChild(child, childParentData.offset + offset);
+      final BoxParentData childParentData = child!.parentData! as BoxParentData;
+      context.paintChild(child!, childParentData.offset + offset);
     }
-    if (debugPaintExpandAreaEnabled && kDebugMode)
+    if (debugPaintExpandAreaEnabled) {
       debugPaintExpandArea(context, offset);
+    }
   }
 
   void debugPaintExpandArea(PaintingContext context, Offset offset) {
@@ -87,7 +90,7 @@ class _ExpandTapRenderBox extends RenderBox
       parentSize.width,
       parentSize.height,
     );
-    final BoxParentData childParentData = child.parentData;
+    final BoxParentData childParentData = child!.parentData! as BoxParentData;
     Offset paintOffset = childParentData.offset + offset - tapPadding.topLeft;
     Rect paintRect = Rect.fromLTWH(
       paintOffset.dx,
@@ -95,22 +98,27 @@ class _ExpandTapRenderBox extends RenderBox
       size.width + tapPadding.horizontal,
       size.height + tapPadding.vertical,
     );
-    if (paintRect.overlaps(parentRect)) {
       final Paint paint = Paint()
         ..style = PaintingStyle.fill
         ..strokeWidth = 1.0
         ..color = debugPaintExpandAreaColor;
-      context.canvas.drawRect(paintRect.intersect(parentRect), paint);
-    }
+
+      final Paint paint2 = Paint()
+        ..style = PaintingStyle.fill
+        ..strokeWidth = 1.0
+        ..color = debugPaintClipAreaColor;
+      context.canvas.drawRect(paintRect, paint);
+      context.canvas.drawRect(paintRect.intersect(parentRect), paint2);
   }
+
 
   @override
   void handleEvent(PointerEvent event, BoxHitTestEntry entry) {
     if (event is PointerDownEvent) {
       _TmpGestureArenaMember member = _TmpGestureArenaMember(onTap: onTap);
-      GestureBinding.instance.gestureArena.add(event.pointer, member);
+      GestureBinding.instance!.gestureArena.add(event.pointer, member);
     } else if (event is PointerUpEvent) {
-      GestureBinding.instance.gestureArena.sweep(event.pointer);
+      GestureBinding.instance!.gestureArena.sweep(event.pointer);
     }
   }
 
@@ -118,26 +126,27 @@ class _ExpandTapRenderBox extends RenderBox
   bool hitTestSelf(Offset position) => true;
 
   @override
-  bool hitTestChildren(BoxHitTestResult result, {Offset position}) {
+  bool hitTestChildren(BoxHitTestResult result, {Offset? position}) {
     this.visitChildren((child) {
       if (child is RenderBox) {
-        final BoxParentData parentData = child.parentData;
-        if (child.hitTest(result, position: position - parentData.offset))
-          return true;
+        final BoxParentData parentData = child.parentData! as BoxParentData;
+        if (child.hitTest(result, position: position! - parentData.offset)) {
+         return;
+        }
       }
     });
     return false;
   }
 
   @override
-  bool hitTest(BoxHitTestResult result, {Offset position}) {
+  bool hitTest(BoxHitTestResult result, {Offset? position}) {
     Rect expandRect = Rect.fromLTWH(
       0 - tapPadding.left,
       0 - tapPadding.top,
       size.width + tapPadding.right + tapPadding.left,
       size.height + tapPadding.top + tapPadding.bottom,
     );
-    if (expandRect.contains(position)) {
+    if (expandRect.contains(position!)) {
       bool hitTarget =
           hitTestChildren(result, position: position) || hitTestSelf(position);
       if (hitTarget) {
