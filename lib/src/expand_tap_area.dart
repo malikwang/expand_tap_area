@@ -116,9 +116,9 @@ class _ExpandTapRenderBox extends RenderBox
   void handleEvent(PointerEvent event, BoxHitTestEntry entry) {
     if (event is PointerDownEvent) {
       _TmpGestureArenaMember member = _TmpGestureArenaMember(onTap: onTap);
-      GestureBinding.instance!.gestureArena.add(event.pointer, member);
+      GestureBinding.instance.gestureArena.add(event.pointer, member);
     } else if (event is PointerUpEvent) {
-      GestureBinding.instance!.gestureArena.sweep(event.pointer);
+      GestureBinding.instance.gestureArena.sweep(event.pointer);
     }
   }
 
