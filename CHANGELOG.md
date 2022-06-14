@@ -1,6 +1,10 @@
-## 1.0.2
+## 1.1.1
 
-- Fix Flutter 3.0.0 warning.
+* Fix Flutter 3.0.0 warning.
+
+## 1.1.0
+
+* Null safety release.
 
 ## 1.0.1
 
